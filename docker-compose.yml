@@ -1,0 +1,28 @@
+services:
+  # 1. FreqLab Strategy Optimizer Web Interface
+  strategy_lab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: freqlab_strategy_optimizer
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+
+  # 2. Freqtrade Trading & Backtesting Engine
+  freqtrade_a:
+    image: freqtradeorg/freqtrade:stable_plot
+    restart: unless-stopped
+    container_name: freqtrade_a
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+    ports:
+      - "127.0.0.1:8080:8080"
+    command: >
+      trade
+      --logfile /freqtrade/user_data/logs/freqtrade_a.log
+      --db-url sqlite:////freqtrade/user_data/tradesv3_a.sqlite
+      --config /freqtrade/user_data/config_a.json
+      --strategy AdxDmiRobustV2

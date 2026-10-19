@@ -1,0 +1,8 @@
+node_modules
+dist
+.git
+.aistudio
+*.log
+.DS_Store
+user_data/logs
+user_data/tradesv3*.sqlite

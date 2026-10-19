@@ -1,0 +1,6 @@
+{
+  "summary": "Revised implementation plan focused specifically on stress-testing and breaking algorithmic trading strategies at their weak points. Tailored for Freqtrade Docker environments, it details edge-case stress-testing (flash crashes, bear bleeding, sideways chop), autopsy of the -50% to -70% backtest failures, robust Python strategy code for Docker user_data/strategies, and Docker config alignment.",
+  "updatedAt": "2026-10-19T11:47:33.985580165Z",
+  "requestFeedback": true,
+  "userFacing": true
+}

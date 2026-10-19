@@ -1,0 +1,6 @@
+{
+  "name": "Freqtrade Strategy Stress-Tester & Optimizer",
+  "description": "Algorithmic trading bot diagnostic lab, failure-mode stress-tester, and production Freqtrade Python strategy optimizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
