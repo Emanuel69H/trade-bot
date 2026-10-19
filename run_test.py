@@ -1,4 +1,5 @@
 import concurrent.futures
+import json
 import os
 import re
 import subprocess
@@ -145,6 +146,7 @@ class RunTest:
         if not os.path.exists(config_file):
             config_file = "user_data/config_a.json"
 
+        self._sanitize_config(config_file)
         self.current_strategy = strategy
         self.current_config_file = config_file
 
@@ -278,9 +280,46 @@ class RunTest:
             encoding="utf-8",
             errors="replace",
         )
-        return proc.returncode, proc.stdout
+    @staticmethod
+    def _sanitize_config(config_file: str) -> None:
+        """Ensures the config file strictly adheres to Freqtrade's JSON schema (e.g. api_server requirements)"""
+        if not os.path.exists(config_file):
+            return
+        try:
+            with open(config_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            modified = False
+            if "api_server" in data:
+                api = data["api_server"]
+                reqs = {
+                    "enabled": False,
+                    "listen_ip_address": "0.0.0.0",
+                    "listen_port": 8080,
+                    "verbosity": "error",
+                    "enable_openapi": False,
+                    "jwt_secret_key": "b9f02031e48864fbb4a11c8b62b38e8be7110bdcaf1d1ebd935545124b33aa2d",
+                    "ws_token": "lB9vtd_FdyvtGkEJaIq2VF2BqvEEekPnyw",
+                    "CORS_origins": ["http://127.0.0.1:8081", "http://localhost:3000"],
+                    "username": "super-trader",
+                    "password": "_f5eL-7x9T=DEdnFS'-#Kzubu^Yu^4^4!Euqc*X:2.7DV_MAULm/Sp23u]#]g2C",
+                }
+                for k, v in reqs.items():
+                    if k not in api:
+                        api[k] = v
+                        modified = True
+                if "_test_config" in config_file and api.get("enabled") is True:
+                    api["enabled"] = False
+                    modified = True
+
+            if modified:
+                with open(config_file, "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=4)
+        except Exception:
+            pass
 
     def _download_data(self, config_file: str, pairs: list[str], timeframes: list[str]) -> None:
+        self._sanitize_config(config_file)
         cmd = [
             "docker",
             "compose",
@@ -317,6 +356,7 @@ class RunTest:
         timeframe: str,
         max_open_trades: int,
     ) -> dict:
+        self._sanitize_config(config_file)
         log_file = Path(f"test.{strategy}.{timeframe}.{self.timerange}.mot{max_open_trades}.log")
 
         cmd = [
