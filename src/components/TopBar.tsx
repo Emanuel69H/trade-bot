@@ -1,7 +1,6 @@
-import React from 'react';
-import { Download, Terminal, Flame, Code2, ShieldAlert } from 'lucide-react';
+import { Download, Terminal, Flame, Code2, ShieldAlert, Play } from 'lucide-react';
 
-export type NavigationTab = 'stress_test' | 'autopsy' | 'python_hub' | 'docker_commands';
+export type NavigationTab = 'gui_runner' | 'stress_test' | 'autopsy' | 'python_hub' | 'docker_commands';
 
 interface TopBarProps {
   activeTab: NavigationTab;
@@ -26,14 +25,26 @@ export const TopBar: React.FC<TopBarProps> = ({ activeTab, onTabChange, onExport
       {/* Zone 2: Clean single-line navigation links */}
       <nav className="hidden md:flex items-center gap-1 p-1 bg-slate-950/80 rounded-lg border border-slate-800/80">
         <button
-          onClick={() => onTabChange('stress_test')}
+          onClick={() => onTabChange('gui_runner')}
           className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap shrink-0 ${
-            activeTab === 'stress_test'
+            activeTab === 'gui_runner'
               ? 'bg-slate-800 text-emerald-400 shadow-sm border border-slate-700/60'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
           }`}
         >
-          <Flame className="w-3.5 h-3.5 text-emerald-400" />
+          <Play className="w-3.5 h-3.5 text-emerald-400 fill-current" />
+          <span>GUI Test Runner</span>
+        </button>
+
+        <button
+          onClick={() => onTabChange('stress_test')}
+          className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap shrink-0 ${
+            activeTab === 'stress_test'
+              ? 'bg-slate-800 text-cyan-400 shadow-sm border border-slate-700/60'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
+          }`}
+        >
+          <Flame className="w-3.5 h-3.5 text-cyan-400" />
           <span>Stress-Test Lab</span>
         </button>
 
@@ -46,7 +57,7 @@ export const TopBar: React.FC<TopBarProps> = ({ activeTab, onTabChange, onExport
           }`}
         >
           <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
-          <span>Failure Autopsy (-70% Runs)</span>
+          <span>Failure Autopsy</span>
         </button>
 
         <button
@@ -58,7 +69,7 @@ export const TopBar: React.FC<TopBarProps> = ({ activeTab, onTabChange, onExport
           }`}
         >
           <Code2 className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Python Strategies (.py)</span>
+          <span>Python Strategies</span>
         </button>
 
         <button
@@ -70,7 +81,7 @@ export const TopBar: React.FC<TopBarProps> = ({ activeTab, onTabChange, onExport
           }`}
         >
           <Terminal className="w-3.5 h-3.5 text-amber-400" />
-          <span>Docker & Commands</span>
+          <span>Docker Setup</span>
         </button>
       </nav>
 

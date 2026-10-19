@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { TopBar, NavigationTab } from './components/TopBar';
+import { GuiBacktestRunner } from './components/GuiBacktestRunner';
 import { StressTestLab } from './components/StressTestLab';
 import { FailureAutopsy } from './components/FailureAutopsy';
 import { StrategyCodeHub } from './components/StrategyCodeHub';
@@ -8,7 +9,7 @@ import { exportAllStrategyFiles } from './utils/exporter';
 import { CheckCircle2 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<NavigationTab>('stress_test');
+  const [activeTab, setActiveTab] = useState<NavigationTab>('gui_runner');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleExportAll = () => {
@@ -30,6 +31,8 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+        {activeTab === 'gui_runner' && <GuiBacktestRunner />}
+
         {activeTab === 'stress_test' && (
           <StressTestLab
             onOpenAutopsy={() => setActiveTab('autopsy')}
