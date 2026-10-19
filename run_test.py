@@ -280,6 +280,8 @@ class RunTest:
             encoding="utf-8",
             errors="replace",
         )
+        return proc.returncode, proc.stdout
+
     @staticmethod
     def _sanitize_config(config_file: str) -> None:
         """Ensures the config file strictly adheres to Freqtrade's JSON schema (e.g. api_server requirements)"""

@@ -175,7 +175,13 @@ class FreqtradeGuiRunner(ctk.CTk):
         timerange = next(tr for lbl, tr in self.timeranges if lbl == selected_tr_label)
         download = self.download_var.get()
 
+        # Disable all UI controls while test is running
         self.run_btn.configure(state="disabled")
+        self.strat_menu.configure(state="disabled")
+        self.tr_menu.configure(state="disabled")
+        self.download_cb.configure(state="disabled")
+        self.plot_btn.configure(state="disabled")
+
         self.status_label.configure(text=f"Running {strategy}...", text_color="#fbbf24")
 
         self.textbox.insert("end", f"\n=======================================================\n")
@@ -207,7 +213,12 @@ class FreqtradeGuiRunner(ctk.CTk):
             self.textbox.insert("end", f"\n[ERROR] {exc}\n")
             self.status_label.configure(text="Failed with errors", text_color="#f87171")
         finally:
+            # Re-enable all UI controls when test completes or errors
             self.run_btn.configure(state="normal")
+            self.strat_menu.configure(state="normal")
+            self.tr_menu.configure(state="normal")
+            self.download_cb.configure(state="normal")
+            self.plot_btn.configure(state="normal")
 
     def _plot_current(self):
         try:

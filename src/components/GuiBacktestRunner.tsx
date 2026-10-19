@@ -287,8 +287,9 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
             <label className="text-xs font-semibold text-slate-300">Target Strategy:</label>
             <select
               value={strategy}
+              disabled={isRunning}
               onChange={e => handleStrategyChange(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {Object.keys(STRATEGY_PRESETS).map(s => (
                 <option key={s} value={s}>
@@ -303,8 +304,9 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
             <label className="text-xs font-semibold text-slate-300">Backtest Timerange:</label>
             <select
               value={timerange}
+              disabled={isRunning}
               onChange={e => setTimerange(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {TIMERANGES.map(tr => (
                 <option key={tr.value} value={tr.value}>
