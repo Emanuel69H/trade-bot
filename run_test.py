@@ -265,10 +265,26 @@ class RunTest:
         return value
 
     def _get_strategy_config(self, strategy: str) -> dict:
-        if strategy not in self.setup:
-            available = ", ".join(sorted(self.setup))
-            raise ValueError(f"Unknown strategy '{strategy}'. Available: {available}")
-        return self.setup[strategy]
+        if strategy in self.setup:
+            return self.setup[strategy]
+
+        # Dynamic fallback for any custom strategy placed in user_data/strategies/
+        pairs = ["ETH/USDT", "XRP/USDT", "DOGE/USDT", "BTC/USDT"]
+        try:
+            if os.path.exists("user_data/config_a.json"):
+                with open("user_data/config_a.json", "r", encoding="utf-8") as f:
+                    c = json.load(f)
+                    whitelist = c.get("exchange", {}).get("pair_whitelist")
+                    if whitelist:
+                        pairs = whitelist
+        except Exception:
+            pass
+
+        return {
+            "pairs": pairs,
+            "TT": ["1h"],
+            "MOP": [2, 4],
+        }
 
     @staticmethod
     def _run_command(cmd: list[str]) -> tuple[int, str]:
@@ -553,40 +569,57 @@ class RunTest:
                 print(f"[BROWSER FAILED] {exc}. File: {file_path}")
 
 
-def Tonification(title="Notification", message="Done", duration=3000):
+def Tonification(title="Notification", message="Done", duration=3000, master=None):
     if not HAS_CTK:
         print(f"[{title}] {message}")
         return
 
-    class Toast(ctk.CTk):
-        def __init__(self):
-            super().__init__()
-            width = 300
-            height = 100
-            self.title("")
-            self.resizable(False, False)
-            self.overrideredirect(True)
-            self.attributes("-topmost", True)
-            self.update_idletasks()
-            screen_w = self.winfo_screenwidth()
-            screen_h = self.winfo_screenheight()
-            x = screen_w - width - 20
-            y = screen_h - height - 60
-            self.geometry(f"{width}x{height}+{x}+{y}")
+    try:
+        import tkinter as tk
+        root_exists = (master is not None) or (tk._default_root is not None)
 
-            frame = ctk.CTkFrame(self, corner_radius=12)
-            frame.pack(fill="both", expand=True, padx=2, pady=2)
+        if root_exists:
+            parent = master if master is not None else tk._default_root
+            toast = ctk.CTkToplevel(parent)
+        else:
+            toast = ctk.CTk()
 
-            title_label = ctk.CTkLabel(frame, text=title, font=("Arial", 16, "bold"))
-            title_label.pack(pady=(12, 4), padx=12)
+        width = 320
+        height = 100
+        toast.title("")
+        toast.resizable(False, False)
+        toast.overrideredirect(True)
+        toast.attributes("-topmost", True)
+        toast.update_idletasks()
 
-            msg_label = ctk.CTkLabel(frame, text=message, wraplength=260, justify="left")
-            msg_label.pack(pady=(0, 12), padx=12)
+        screen_w = toast.winfo_screenwidth()
+        screen_h = toast.winfo_screenheight()
+        x = screen_w - width - 20
+        y = screen_h - height - 60
+        toast.geometry(f"{width}x{height}+{x}+{y}")
 
-            self.after(duration, self.destroy)
-            self.mainloop()
+        frame = ctk.CTkFrame(toast, corner_radius=12, fg_color="#1e293b")
+        frame.pack(fill="both", expand=True, padx=2, pady=2)
 
-    Toast()
+        title_label = ctk.CTkLabel(frame, text=title, font=("Arial", 14, "bold"), text_color="#38bdf8")
+        title_label.pack(pady=(10, 2), padx=12)
+
+        msg_label = ctk.CTkLabel(frame, text=message, font=("Arial", 11), text_color="#f8fafc", wraplength=280, justify="left")
+        msg_label.pack(pady=(0, 10), padx=12)
+
+        def _safe_close():
+            try:
+                if toast.winfo_exists():
+                    toast.destroy()
+            except Exception:
+                pass
+
+        toast.after(duration, _safe_close)
+
+        if not root_exists:
+            toast.mainloop()
+    except Exception as exc:
+        print(f"[{title}] {message}")
 
 
 if __name__ == "__main__":
