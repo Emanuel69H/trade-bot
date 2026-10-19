@@ -53,7 +53,7 @@
     "chat_id": ""
   },
   "api_server": {
-    "enabled": true
+    "enabled": false
   },
   "bot_name": "freqtrade",
   "initial_state": "running",
