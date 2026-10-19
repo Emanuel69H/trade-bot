@@ -212,6 +212,44 @@ class RunTest:
         self._build_full_result(results, result_log)
         self._build_short_result(results, short_log)
 
+        # Auto-save to SQLite Test Database
+        try:
+            import test_db
+            short_content = short_log.read_text(encoding="utf-8") if short_log.exists() else ""
+            full_content = result_log.read_text(encoding="utf-8") if result_log.exists() else ""
+
+            profits = [r["parsed"]["total_profit_pct"] for r in results if r.get("parsed") and r["parsed"].get("total_profit_pct") is not None]
+            best_profit = max(profits) if profits else 0.0
+            drawdowns = [r["parsed"]["drawdown_pct"] for r in results if r.get("parsed") and r["parsed"].get("drawdown_pct") is not None]
+            max_dd = max(drawdowns) if drawdowns else 0.0
+            win_pcts = [r["parsed"]["win_pct"] for r in results if r.get("parsed") and r["parsed"].get("win_pct") is not None]
+            avg_win = sum(win_pcts) / len(win_pcts) if win_pcts else 0.0
+            trades = [r["parsed"]["trades"] for r in results if r.get("parsed") and r["parsed"].get("trades") is not None]
+            tot_trades = sum(trades) if trades else 0
+            balances = [r["parsed"]["final_balance_usdt"] for r in results if r.get("parsed") and r["parsed"].get("final_balance_usdt") is not None]
+            final_bal = max(balances) if balances else 0.0
+
+            testname = f"{strategy}_{timeframe_label}_{self.timerange}"
+            tid = test_db.save_test(
+                testname=testname,
+                strategy=strategy,
+                timerange=self.timerange,
+                timeframe=timeframe_label,
+                max_open_trades=",".join(str(m) for m in max_open_trades_values),
+                pairs=pairs,
+                short_result=short_content,
+                long_result=full_content,
+                status="WARNING" if has_error else "SUCCESS",
+                profit_pct=best_profit,
+                drawdown_pct=max_dd,
+                win_rate_pct=avg_win,
+                total_trades=tot_trades,
+                final_balance=final_bal,
+            )
+            print(f"[DATABASE] Test run successfully stored in database with ID: {tid}")
+        except Exception as db_exc:
+            print(f"[DATABASE NOTICE] Could not auto-save to test_db: {db_exc}")
+
         if has_error:
             print("[WARNING] One or more backtests exited with error.")
 

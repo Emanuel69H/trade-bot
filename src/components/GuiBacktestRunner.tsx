@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Play, Copy, Check, Terminal, BarChart3, Bell, ShieldCheck, Sun, Moon, Palette, Type } from 'lucide-react';
+import { Play, Copy, Check, Terminal, BarChart3, Bell, ShieldCheck, Sun, Moon, Palette, Type, Database } from 'lucide-react';
 
 interface StrategySetup {
   pairs: string[];
@@ -108,7 +108,11 @@ export interface ParsedResultRow {
 type ColorTheme = 'emerald' | 'blue' | 'purple' | 'amber';
 type LogTab = 'table' | 'long_log' | 'console';
 
-export const GuiBacktestRunner: React.FC = () => {
+interface GuiBacktestRunnerProps {
+  onGoToDatabase?: () => void;
+}
+
+export const GuiBacktestRunner: React.FC<GuiBacktestRunnerProps> = ({ onGoToDatabase }) => {
   const [strategy, setStrategy] = useState<string>('AdxDmiRobustV2');
   const [timerange, setTimerange] = useState<string>('20210101-20260830');
   const [downloadData, setDownloadData] = useState<boolean>(false);
@@ -466,6 +470,18 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
               <option value="14">Size: 14px</option>
               <option value="16">Size: 16px</option>
             </select>
+
+            {onGoToDatabase && (
+              <button
+                onClick={onGoToDatabase}
+                disabled={isRunning}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition cursor-pointer"
+                title="Browse Test Run Archive & Database"
+              >
+                <Database className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Test Database</span>
+              </button>
+            )}
           </div>
         </div>
 

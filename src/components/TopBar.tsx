@@ -1,6 +1,6 @@
-import { Download, Terminal, Flame, Code2, ShieldAlert, Play } from 'lucide-react';
+import { Download, Terminal, Flame, Code2, ShieldAlert, Play, Database } from 'lucide-react';
 
-export type NavigationTab = 'gui_runner' | 'stress_test' | 'autopsy' | 'python_hub' | 'docker_commands';
+export type NavigationTab = 'gui_runner' | 'database' | 'stress_test' | 'autopsy' | 'python_hub' | 'docker_commands';
 
 interface TopBarProps {
   activeTab: NavigationTab;
@@ -34,6 +34,18 @@ export const TopBar: React.FC<TopBarProps> = ({ activeTab, onTabChange, onExport
         >
           <Play className="w-3.5 h-3.5 text-emerald-400 fill-current" />
           <span>GUI Test Runner</span>
+        </button>
+
+        <button
+          onClick={() => onTabChange('database')}
+          className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap shrink-0 ${
+            activeTab === 'database'
+              ? 'bg-slate-800 text-indigo-400 shadow-sm border border-slate-700/60'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
+          }`}
+        >
+          <Database className="w-3.5 h-3.5 text-indigo-400" />
+          <span>Test Database</span>
         </button>
 
         <button
