@@ -6,6 +6,7 @@ Run with: python gui_runner.py
 """
 import sys
 import threading
+from pathlib import Path
 from run_test import RunTest, Tonification, HAS_CTK
 
 if not HAS_CTK:
