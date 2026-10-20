@@ -1,6 +1,6 @@
 from pandas import DataFrame
 import talib.abstract as ta
-from freqtrade.strategy import IStrategy, DecimalParameter, IntParameter, informative
+from freqtrade.strategy import IStrategy, DecimalParameter, IntParameter
 
 
 class AdxDmiLargeCap15m(IStrategy):
@@ -10,11 +10,11 @@ class AdxDmiLargeCap15m(IStrategy):
     Engineered specifically for high-liquidity Large-Cap crypto assets:
     - Target Basket: BTC/USDT, ETH/USDT, SOL/USDT
     - Base Timeframe: 15m (Agile entry execution)
-    - Macro Trend Filter: 1h Informative Timeframe (Anchored directional bias)
+    - Macro Trend Filter: Multi-timeframe trend anchor with seamless synthetic fallback
 
     Core Algorithmic Principles:
-    1. Multi-Timeframe Alignment: Long trades are ONLY permitted when the 1-hour
-       macro trend is confirmed bullish (1h Price > 1h EMA50 and 1h EMA50 > 1h EMA200).
+    1. Multi-Timeframe Alignment: Long trades are ONLY permitted when the macro
+       trend is confirmed bullish (Price > Macro EMA50 and Macro EMA50 > Macro EMA200).
     2. Pullback Value Entry: Instead of chasing green breakout candles at peaks
        (which caused AdxDmiOnlyStrategy's flat +0.7% return), entries occur when
        price pulls back to the 15m 20-period EMA during confirmed uptrends.
@@ -22,13 +22,15 @@ class AdxDmiLargeCap15m(IStrategy):
        volatility-scaled stops and profit lock-in via custom_stoploss.
     4. Momentum Exhaustion Protection: Prevents entering when ADX is overextended (>45)
        or when RSI is overbought (>65).
+    5. Zero Data Dependency Crash: Uses robust multi-timeframe synthesis (4x 15m periods = 1h),
+       so backtests and live trading never fail due to missing informative candle downloads.
     """
 
     INTERFACE_VERSION = 3
     can_short = False
 
     timeframe = "15m"
-    startup_candle_count = 200
+    startup_candle_count = 400
     process_only_new_candles = True
 
     # Emergency catastrophic hard stoploss (-7%); dynamic stop is handled by custom_stoploss
@@ -70,24 +72,6 @@ class AdxDmiLargeCap15m(IStrategy):
         "exit": "GTC",
     }
 
-    @informative("1h")
-    def populate_indicators_1h(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """
-        1-Hour Macro Trend Anchor.
-        Freqtrade automatically prefixes these columns with '_1h' on merge.
-        """
-        dataframe["ema50"] = ta.EMA(dataframe, timeperiod=50)
-        dataframe["ema200"] = ta.EMA(dataframe, timeperiod=200)
-        dataframe["adx"] = ta.ADX(dataframe, timeperiod=14)
-        dataframe["plus_di"] = ta.PLUS_DI(dataframe, timeperiod=14)
-        dataframe["minus_di"] = ta.MINUS_DI(dataframe, timeperiod=14)
-        dataframe["macro_bull"] = (
-            (dataframe["close"] > dataframe["ema50"]) &
-            (dataframe["ema50"] > dataframe["ema200"]) &
-            (dataframe["plus_di"] > dataframe["minus_di"])
-        )
-        return dataframe
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Standard 15m ADX and DMI (14 periods)
         dataframe["adx"] = ta.ADX(dataframe, timeperiod=14)
@@ -127,21 +111,28 @@ class AdxDmiLargeCap15m(IStrategy):
 
         dataframe["trend_exhausted"] = dataframe["adx"] >= self.buy_adx_exhaustion.value
 
+        # Macro Trend Anchor (Synthesized from 15m candles: 4x 15m = 1 hour):
+        # 1h EMA 50  equivalent = 15m EMA 200
+        # 1h EMA 200 equivalent = 15m EMA 600
+        # 1h DMI 14  equivalent = 15m DMI 56
+        dataframe["macro_ema50"] = dataframe["ema200"]
+        dataframe["macro_ema200"] = ta.EMA(dataframe, timeperiod=600)
+        dataframe["macro_plus_di"] = ta.PLUS_DI(dataframe, timeperiod=56)
+        dataframe["macro_minus_di"] = ta.MINUS_DI(dataframe, timeperiod=56)
+        dataframe["macro_bull"] = (
+            (dataframe["close"] > dataframe["macro_ema50"]) &
+            (dataframe["macro_ema50"] > dataframe["macro_ema200"]) &
+            (dataframe["macro_plus_di"] > dataframe["macro_minus_di"])
+        )
+
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Check for 1h informative macro trend; if informative pairs were not merged, fallback safely
-        macro_filter = (dataframe["close"] > dataframe["ema200"])
-        if "macro_bull_1h" in dataframe.columns:
-            macro_filter = (dataframe["macro_bull_1h"] == 1) | (dataframe["close"] > dataframe["ema200"])
-        elif "ema50_1h" in dataframe.columns:
-            macro_filter = (dataframe["close"] > dataframe["ema50_1h"])
-
         dataframe.loc[
             (
                 (dataframe["volume"] > 0) &
                 (dataframe["volume"] > dataframe["volume_mean_20"] * 0.75) &
-                macro_filter &
+                dataframe["macro_bull"] &
                 dataframe["bull_trend_structure"] &
                 dataframe["pullback_entry_zone"] &
                 (~dataframe["trend_exhausted"]) &
