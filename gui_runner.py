@@ -241,17 +241,6 @@ class FreqtradeGuiRunner(ctk.CTk):
         )
         self.plot_btn.pack(side="left", padx=(0, 10))
 
-        self.db_btn = ctk.CTkButton(
-            btn_row,
-            text="🗄️ Open Database Tab",
-            font=("Arial", 12, "bold"),
-            fg_color=("#475569", "#334155"),
-            hover_color=("#334155", "#475569"),
-            height=36,
-            command=self._switch_to_db_tab,
-        )
-        self.db_btn.pack(side="left", padx=(0, 10))
-
         self.open_logs_btn = ctk.CTkButton(
             btn_row,
             text="📂 Open Logs Folder",
@@ -962,7 +951,7 @@ class FreqtradeGuiRunner(ctk.CTk):
             self.textbox.insert("end", self.raw_console_content)
 
     def _set_ui_state(self, enabled: bool):
-        """Enables or disables all interactive controls during execution to prevent concurrent tampering."""
+        """Enables or disables backtest run controls during execution, keeping theme and font styling active."""
         state = "normal" if enabled else "disabled"
         self.run_btn.configure(state=state)
         self.strat_menu.configure(state=state)
@@ -970,13 +959,10 @@ class FreqtradeGuiRunner(ctk.CTk):
         self.tr_menu.configure(state=state)
         self.download_cb.configure(state=state)
         self.plot_btn.configure(state=state)
-        self.db_btn.configure(state=state)
         self.open_logs_btn.configure(state=state)
-        self.mode_toggle.configure(state=state)
-        self.theme_menu.configure(state=state)
-        self.font_family_menu.configure(state=state)
-        self.font_size_menu.configure(state=state)
         self.copy_btn.configure(state=state)
+        # Note: Mode toggle, theme menu, font family, and font size remain enabled
+        # during the test so the user can freely customize appearance without affecting execution.
         if hasattr(self, "db_refresh_btn"):
             self.db_refresh_btn.configure(state=state)
         if hasattr(self, "db_export_btn"):

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Play, Copy, Check, Terminal, BarChart3, Bell, ShieldCheck, Sun, Moon, Palette, Type, Database } from 'lucide-react';
+import { Play, Copy, Check, Terminal, BarChart3, Bell, ShieldCheck, Sun, Moon, Palette, Type } from 'lucide-react';
 
 interface StrategySetup {
   pairs: string[];
@@ -399,9 +399,8 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
             {/* Dark / Light Toggle */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              disabled={isRunning}
               title="Toggle Dark / Light Mode"
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors cursor-pointer disabled:opacity-50 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
                 isDarkMode
                   ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
                   : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
@@ -416,9 +415,8 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
               <Palette className="w-3.5 h-3.5 text-slate-400" />
               <select
                 value={colorTheme}
-                disabled={isRunning}
                 onChange={e => setColorTheme(e.target.value as ColorTheme)}
-                className={`px-2 py-1.5 text-xs rounded-lg border font-medium focus:outline-none cursor-pointer disabled:opacity-50 ${
+                className={`px-2 py-1.5 text-xs rounded-lg border font-medium focus:outline-none cursor-pointer ${
                   isDarkMode
                     ? 'bg-slate-800 text-slate-200 border-slate-700'
                     : 'bg-white text-slate-700 border-slate-300'
@@ -436,9 +434,8 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
               <Type className="w-3.5 h-3.5 text-slate-400" />
               <select
                 value={fontFamily}
-                disabled={isRunning}
                 onChange={e => setFontFamily(e.target.value)}
-                className={`px-2 py-1.5 text-xs rounded-lg border font-mono focus:outline-none cursor-pointer disabled:opacity-50 ${
+                className={`px-2 py-1.5 text-xs rounded-lg border font-mono focus:outline-none cursor-pointer ${
                   isDarkMode
                     ? 'bg-slate-800 text-slate-200 border-slate-700'
                     : 'bg-white text-slate-700 border-slate-300'
@@ -454,9 +451,8 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
             {/* Font Size Selector */}
             <select
               value={fontSize}
-              disabled={isRunning}
               onChange={e => setFontSize(Number(e.target.value))}
-              className={`px-2 py-1.5 text-xs rounded-lg border font-mono focus:outline-none cursor-pointer disabled:opacity-50 ${
+              className={`px-2 py-1.5 text-xs rounded-lg border font-mono focus:outline-none cursor-pointer ${
                 isDarkMode
                   ? 'bg-slate-800 text-slate-200 border-slate-700'
                   : 'bg-white text-slate-700 border-slate-300'
@@ -470,18 +466,6 @@ Tonification("Freqtrade test", "Test for ${strategy} was completed", 3000)
               <option value="14">Size: 14px</option>
               <option value="16">Size: 16px</option>
             </select>
-
-            {onGoToDatabase && (
-              <button
-                onClick={onGoToDatabase}
-                disabled={isRunning}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition cursor-pointer"
-                title="Browse Test Run Archive & Database"
-              >
-                <Database className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Test Database</span>
-              </button>
-            )}
           </div>
         </div>
 

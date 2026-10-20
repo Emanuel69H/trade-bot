@@ -1436,11 +1436,9 @@ class FreqtradeGuiRunner(ctk.CTk):
         self.download_cb.configure(state=state)
         self.plot_btn.configure(state=state)
         self.open_logs_btn.configure(state=state)
-        self.mode_toggle.configure(state=state)
-        self.theme_menu.configure(state=state)
-        self.font_family_menu.configure(state=state)
-        self.font_size_menu.configure(state=state)
         self.copy_btn.configure(state=state)
+        # Note: Mode toggle, theme menu, font family, and font size remain enabled
+        # during the test so the user can freely customize appearance without affecting execution.
 
     def _start_run_thread(self):
         strategy = self.strat_menu.get()
