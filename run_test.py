@@ -1,4 +1,5 @@
 import concurrent.futures
+import copy
 import json
 import os
 import re
@@ -14,21 +15,52 @@ except ImportError:
     HAS_CTK = False
 
 try:
-    from test_setups import TEST_SETUPS, load_setups
+    from test_setups import (
+        DEFAULT_TIMERANGE,
+        LD,
+        TEST_SETUPS,
+        TIMERANGES,
+        TR_1Y,
+        TR_2Y,
+        TR_3Y,
+        TR_5Y,
+        TR_6M,
+        TR_LY,
+        load_setups,
+    )
 except ImportError:
+    LD = 20260830
+    TR_LY = f"20250325-{LD}"
+    TR_1Y = f"20250101-{LD}"
+    TR_2Y = f"20240101-{LD}"
+    TR_3Y = f"20230101-{LD}"
+    TR_5Y = f"20210101-{LD}"
+    TR_6M = f"20250601-{LD}"
+    DEFAULT_TIMERANGE = TR_LY
+    TIMERANGES = {
+        "6M": TR_6M,
+        "1Y": TR_1Y,
+        "2Y": TR_2Y,
+        "3Y": TR_3Y,
+        "5Y": TR_5Y,
+        "LY": TR_LY,
+    }
     TEST_SETUPS = {}
     load_setups = None
 
-ld = 20260830
+ld = LD
 
 
 class RunTest:
-    TR_LY = f"20250325-{ld}"
-    TR_1Y = f"20250101-{ld}"
-    TR_2Y = f"20240101-{ld}"
-    TR_3Y = f"20230101-{ld}"
-    TR_5Y = f"20210101-{ld}"
-    TR_6M = f"20250601-{ld}"
+    ld = LD
+    TR_LY = TR_LY
+    TR_1Y = TR_1Y
+    TR_2Y = TR_2Y
+    TR_3Y = TR_3Y
+    TR_5Y = TR_5Y
+    TR_6M = TR_6M
+    DEFAULT_TIMERANGE = DEFAULT_TIMERANGE
+    TIMERANGES = TIMERANGES
 
     def __init__(
         self,
@@ -37,7 +69,8 @@ class RunTest:
         setups_file: str | None = None,
     ) -> None:
         self.service_name = service_name
-        self.timerange = timerange or self.TR_LY
+        self._explicit_timerange = timerange is not None
+        self.timerange = timerange or self.DEFAULT_TIMERANGE
         self.current_strategy: str | None = None
         self.current_config_file: str | None = None
         self.setups_file = setups_file
@@ -46,25 +79,22 @@ class RunTest:
     @classmethod
     def _load_strategy_setups(cls, filepath: str | None = None) -> dict[str, dict]:
         """
-        Load test setups from a standalone configuration file:
-        1. Custom filepath (if passed)
-        2. test_setups.json in root or user_data/
-        3. test_setups.py module (TEST_SETUPS)
+        Load test setups.
+        Primary source: Python dictionary in test_setups.py (supports variables).
+        Secondary: custom filepath or test_setups.json.
         """
-        candidate_paths = [
-            filepath,
-            "test_setups.json",
-            "user_data/test_setups.json",
-        ]
-        for p in candidate_paths:
-            if p and os.path.exists(p):
-                try:
-                    with open(p, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-                        if isinstance(data, dict):
-                            return data
-                except Exception as exc:
-                    print(f"[SETUPS] Warning: error reading {p}: {exc}")
+        if filepath and os.path.exists(filepath):
+            try:
+                with open(filepath, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, dict):
+                        return data
+            except Exception as exc:
+                print(f"[SETUPS] Warning: error reading {filepath}: {exc}")
+
+        # Primary source: Python dictionary in test_setups.py
+        if TEST_SETUPS:
+            return copy.deepcopy(TEST_SETUPS)
 
         if load_setups:
             try:
@@ -74,8 +104,19 @@ class RunTest:
             except Exception:
                 pass
 
-        if TEST_SETUPS:
-            return dict(TEST_SETUPS)
+        candidate_paths = [
+            "test_setups.json",
+            "user_data/test_setups.json",
+        ]
+        for p in candidate_paths:
+            if os.path.exists(p):
+                try:
+                    with open(p, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        if isinstance(data, dict):
+                            return data
+                except Exception:
+                    pass
 
         return {}
 
@@ -84,6 +125,10 @@ class RunTest:
         timeframes = self._ensure_list(cfg["TT"])
         max_open_trades_values = cfg["MOP"]
         pairs = cfg["pairs"]
+
+        # Strategy-configured timerange if not explicitly overridden by user
+        if not self._explicit_timerange and "timerange" in cfg:
+            self.timerange = cfg["timerange"]
 
         config_file = f"user_data/{strategy}_test_config.json"
         if not os.path.exists(config_file):

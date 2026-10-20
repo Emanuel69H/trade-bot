@@ -927,50 +927,85 @@ CMD ["serve", "-s", "dist", "-l", "3000"]
   },
   {
     id: 'test_setups_py',
-    name: 'test_setups.py (Python Test Configurations & Loader)',
+    name: 'test_setups.py (Python Test Configurations & Variables)',
     filename: 'test_setups.py',
     category: 'script',
     language: 'python',
     description:
-      'Python module exporting TEST_SETUPS dictionary with helper functions load_setups() and save_setups() for automated batch testing.',
+      'Primary Python configuration module using reusable variables for timeranges, coin pairs, and timeframes across all strategy test setups.',
     content: `#!/usr/bin/env python3
 """
 Standalone Strategy Test Configurations for Automated Multi-Combination Testing.
+Uses Python variables for time ranges and coin pairs for clean, reusable configuration.
 """
 from __future__ import annotations
+import copy
 import json
 from pathlib import Path
 
+# --- 1. TIME RANGE VARIABLES ---
+LD = 20260830
+
+TR_LY = f"20250325-{LD}"  # Latest / Recent range (~1.5 years)
+TR_1Y = f"20250101-{LD}"  # 1 Year test
+TR_2Y = f"20240101-{LD}"  # 2 Years test
+TR_3Y = f"20230101-{LD}"  # 3 Years test
+TR_5Y = f"20210101-{LD}"  # 5 Years test (Full bull & bear cycle)
+TR_6M = f"20250601-{LD}"  # 6 Months short-term test
+
+TIMERANGES: dict[str, str] = {
+    "6M": TR_6M,
+    "1Y": TR_1Y,
+    "2Y": TR_2Y,
+    "3Y": TR_3Y,
+    "5Y": TR_5Y,
+    "LY": TR_LY,
+}
+
+DEFAULT_TIMERANGE = TR_LY
+
+# --- 2. REUSABLE COIN PAIR VARIABLES ---
+PAIRS_ETH_XRP_DOGE_BTC = ["ETH/USDT", "XRP/USDT", "DOGE/USDT", "BTC/USDT"]
+PAIRS_BTC_ETH_SOL = ["BTC/USDT", "ETH/USDT", "SOL/USDT"]
+PAIRS_TOP_5 = ["BTC/USDT", "ETH/USDT", "BNB/USDT", "XRP/USDT", "DOGE/USDT"]
+PAIRS_ETH_XRP_BTC = ["ETH/USDT", "XRP/USDT", "BTC/USDT"]
+
+# --- 3. STRATEGY TEST SETUPS (PYTHON DICTIONARY) ---
 TEST_SETUPS: dict[str, dict] = {
     "AdxDmiRobustV2": {
-        "pairs": ["ETH/USDT", "XRP/USDT", "DOGE/USDT", "BTC/USDT"],
+        "pairs": PAIRS_ETH_XRP_DOGE_BTC,
         "TT": ["1h", "2h"],
         "MOP": [2, 3, 4],
+        "timerange": TR_5Y,
+        "timeranges": [TR_1Y, TR_2Y, TR_5Y],
     },
     "AdxDmiOnlyStrategy": {
-        "pairs": ["ETH/USDT", "XRP/USDT", "BTC/USDT"],
+        "pairs": PAIRS_ETH_XRP_BTC,
         "TT": ["2h"],
         "MOP": [2, 3, 4],
+        "timerange": TR_5Y,
+        "timeranges": [TR_1Y, TR_2Y, TR_5Y],
     },
     "AdxDmiLargeCap15m": {
-        "pairs": ["BTC/USDT", "ETH/USDT", "SOL/USDT"],
+        "pairs": PAIRS_BTC_ETH_SOL,
         "TT": ["15m"],
         "MOP": [2, 3],
+        "timerange": TR_5Y,
+        "timeranges": [TR_6M, TR_1Y, TR_5Y],
     },
 }
 
 setup = TEST_SETUPS
 
 def load_setups(path=None):
-    target = Path(path) if path else Path(__file__).parent / "test_setups.json"
-    if target.exists():
-        with open(target, "r", encoding="utf-8") as f:
+    if path and Path(path).exists():
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
-    return dict(TEST_SETUPS)
+    return copy.deepcopy(TEST_SETUPS)
 
 if __name__ == "__main__":
     for strat, cfg in TEST_SETUPS.items():
-        print(f"{strat}: pairs={len(cfg['pairs'])}, TT={cfg['TT']}")
+        print(f"{strat}: pairs={len(cfg['pairs'])}, TT={cfg['TT']}, timerange={cfg.get('timerange')}")
 `,
   },
   {
