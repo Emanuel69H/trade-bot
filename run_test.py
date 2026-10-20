@@ -134,6 +134,15 @@ class RunTest:
                 "TT": ["2h"],
                 "MOP": [2, 3, 4],
             },
+            "AdxDmiLargeCap15m": {
+                "pairs": [
+                    "BTC/USDT",
+                    "ETH/USDT",
+                    "SOL/USDT",
+                ],
+                "TT": ["15m"],
+                "MOP": [2, 3],
+            },
         }
 
     def runtest(self, strategy: str, download: bool = False, test: bool = True) -> list[dict]:

@@ -15,7 +15,7 @@ export default function App() {
 
   const handleExportAll = () => {
     exportAllStrategyFiles();
-    setToastMessage('Downloading complete Freqtrade strategy bundle (6 files)...');
+    setToastMessage('Downloading complete Freqtrade strategy bundle & configs...');
     setTimeout(() => {
       setToastMessage(null);
     }, 4500);
