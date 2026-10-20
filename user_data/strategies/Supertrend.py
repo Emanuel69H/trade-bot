@@ -66,49 +66,30 @@ class Supertrend(IStrategy):
     sell_p3 = IntParameter(7, 21, default=14)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        new_cols = []
-    
-        for multiplier in self.buy_m1.range:
-            for period in self.buy_p1.range:
-                st = self.supertrend(dataframe, multiplier, period)[['STX']].rename(
-                    columns={'STX': f'supertrend_1_buy_{multiplier}_{period}'})
-                new_cols.append(st)
-    
-        for multiplier in self.buy_m2.range:
-            for period in self.buy_p2.range:
-                st = self.supertrend(dataframe, multiplier, period)[['STX']].rename(
-                    columns={'STX': f'supertrend_2_buy_{multiplier}_{period}'})
-                new_cols.append(st)
-    
-        for multiplier in self.buy_m3.range:
-            for period in self.buy_p3.range:
-                st = self.supertrend(dataframe, multiplier, period)[['STX']].rename(
-                    columns={'STX': f'supertrend_3_buy_{multiplier}_{period}'})
-                new_cols.append(st)
-    
-        for multiplier in self.sell_m1.range:
-            for period in self.sell_p1.range:
-                st = self.supertrend(dataframe, multiplier, period)[['STX']].rename(
-                    columns={'STX': f'supertrend_1_sell_{multiplier}_{period}'})
-                new_cols.append(st)
-    
-        for multiplier in self.sell_m2.range:
-            for period in self.sell_p2.range:
-                st = self.supertrend(dataframe, multiplier, period)[['STX']].rename(
-                    columns={'STX': f'supertrend_2_sell_{multiplier}_{period}'})
-                new_cols.append(st)
-    
-        for multiplier in self.sell_m3.range:
-            for period in self.sell_p3.range:
-                st = self.supertrend(dataframe, multiplier, period)[['STX']].rename(
-                    columns={'STX': f'supertrend_3_sell_{multiplier}_{period}'})
-                new_cols.append(st)
-    
-        if new_cols:
-            dataframe = pd.concat([dataframe] + new_cols, axis=1)
+        # Optimized: Calculate only the active 3 buy and 3 sell Supertrends
+        # instead of generating 630 unused combinations across all parameter ranges
+        dataframe[f'supertrend_1_buy_{self.buy_m1.value}_{self.buy_p1.value}'] = (
+            self.supertrend(dataframe, self.buy_m1.value, self.buy_p1.value)['STX']
+        )
+        dataframe[f'supertrend_2_buy_{self.buy_m2.value}_{self.buy_p2.value}'] = (
+            self.supertrend(dataframe, self.buy_m2.value, self.buy_p2.value)['STX']
+        )
+        dataframe[f'supertrend_3_buy_{self.buy_m3.value}_{self.buy_p3.value}'] = (
+            self.supertrend(dataframe, self.buy_m3.value, self.buy_p3.value)['STX']
+        )
+
+        dataframe[f'supertrend_1_sell_{self.sell_m1.value}_{self.sell_p1.value}'] = (
+            self.supertrend(dataframe, self.sell_m1.value, self.sell_p1.value)['STX']
+        )
+        dataframe[f'supertrend_2_sell_{self.sell_m2.value}_{self.sell_p2.value}'] = (
+            self.supertrend(dataframe, self.sell_m2.value, self.sell_p2.value)['STX']
+        )
+        dataframe[f'supertrend_3_sell_{self.sell_m3.value}_{self.sell_p3.value}'] = (
+            self.supertrend(dataframe, self.sell_m3.value, self.sell_p3.value)['STX']
+        )
 
         dataframe['ema200'] = ta.EMA(dataframe, timeperiod=200)
-    
+
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
