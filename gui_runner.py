@@ -186,7 +186,7 @@ class FreqtradeGuiRunner(ctk.CTk):
             width=230,
             command=self._on_strategy_change,
         )
-        default_strat = "AdxDmiLargeCap15m" if "AdxDmiLargeCap15m" in available_strats else ("AdxDmiRobustV2" if "AdxDmiRobustV2" in available_strats else available_strats[0])
+        default_strat = "TrendPullback1h" if "TrendPullback1h" in available_strats else (available_strats[0] if available_strats else "TrendPullback1h")
         self.strat_menu.set(default_strat)
         self.strat_menu.pack(side="left", padx=(0, 8))
 

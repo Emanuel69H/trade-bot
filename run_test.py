@@ -708,5 +708,5 @@ if __name__ == "__main__":
     test = True
 
     tester = RunTest()
-    tester.runtest("Supertrend", download=download, test=test)
-    Tonification("Freqtrade test", "Test for Supertrend was completed", 3000)
+    tester.runtest("TrendPullback1h", download=download, test=test)
+    Tonification("Freqtrade test", "Test for TrendPullback1h was completed", 3000)

@@ -1,4 +1,35 @@
 {
+  "TrendPullback1h": {
+    "pairs": [
+      "DOGE/USDT",
+      "XRP/USDT",
+      "BTC/USDT",
+      "TRX/USDT",
+      "UNI/USDT",
+      "LINK/USDT",
+      "BCH/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "ADA/USDT",
+      "AVAX/USDT"
+    ],
+    "TT": [
+      "1h"
+    ],
+    "MOP": [
+      3,
+      5,
+      8
+    ],
+    "timerange": "20251010-20261010",
+    "timeranges": [
+      "20251010-20261010",
+      "20241010-20261010",
+      "20211010-20261010",
+      "20240101-20241231",
+      "20250101-20251231"
+    ]
+  },
   "AdxDmiRobustV2": {
     "pairs": [
       "ETH/USDT",

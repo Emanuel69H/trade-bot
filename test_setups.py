@@ -164,6 +164,13 @@ STANDARD_VALIDATION_RANGES = [
 # Easy to read, customize, and add variables for multiple strategies.
 # ===========================================================================
 TEST_SETUPS: dict[str, dict] = {
+    "TrendPullback1h": {
+        "pairs": PAIRS_ALL_11,
+        "TT": TF_1H,
+        "MOP": [3, 5, 8],
+        "timerange": TR_LAST_1Y,
+        "timeranges": [TR_LAST_1Y, TR_LAST_2Y, TR_LAST_5Y, TR_2024, TR_2025],
+    },
     "AdxDmiRobustV2": {
         "pairs": PAIRS_ETH_XRP_DOGE_BTC,
         "TT": TF_1H_2H,
