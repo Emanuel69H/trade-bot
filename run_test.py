@@ -13,6 +13,12 @@ try:
 except ImportError:
     HAS_CTK = False
 
+try:
+    from test_setups import TEST_SETUPS, load_setups
+except ImportError:
+    TEST_SETUPS = {}
+    load_setups = None
+
 ld = 20260830
 
 
@@ -24,126 +30,54 @@ class RunTest:
     TR_5Y = f"20210101-{ld}"
     TR_6M = f"20250601-{ld}"
 
-    def __init__(self, service_name: str = "freqtrade_a", timerange: str | None = None) -> None:
+    def __init__(
+        self,
+        service_name: str = "freqtrade_a",
+        timerange: str | None = None,
+        setups_file: str | None = None,
+    ) -> None:
         self.service_name = service_name
         self.timerange = timerange or self.TR_LY
         self.current_strategy: str | None = None
         self.current_config_file: str | None = None
+        self.setups_file = setups_file
+        self.setup: dict[str, dict] = self._load_strategy_setups(setups_file)
 
-        self.setup: dict[str, dict] = {
-            "AdxDmiRobustV2": {
-                "pairs": [
-                    "ETH/USDT",
-                    "XRP/USDT",
-                    "DOGE/USDT",
-                    "BTC/USDT",
-                ],
-                "TT": ["1h", "2h"],
-                "MOP": [2, 3, 4],
-            },
-            "RegimeAdaptiveMaster": {
-                "pairs": [
-                    "ETH/USDT",
-                    "XRP/USDT",
-                    "DOGE/USDT",
-                    "BTC/USDT",
-                ],
-                "TT": ["1h"],
-                "MOP": [2, 4],
-            },
-            "DonchianBreakoutADXChop": {
-                "pairs": [
-                    "XRP/USDT",
-                    "DOGE/USDT",
-                    "ETH/USDT",
-                ],
-                "TT": ["1h"],
-                "MOP": [4],
-            },
-            "UniversalMACD": {
-                "pairs": [
-                    "ETH/USDT",
-                    "BTC/USDT",
-                ],
-                "TT": ["5m"],
-                "MOP": [1],
-            },
-            "SupertrendEmaAdx": {
-                "pairs": [
-                    "DOGE/USDT",
-                    "XRP/USDT",
-                    "BTC/USDT",
-                    "ETH/USDT",
-                    "BNB/USDT",
-                ],
-                "TT": ["1h"],
-                "MOP": [1],
-            },
-            "Supertrend": {
-                "pairs": [
-                    "DOGE/USDT",
-                    "XRP/USDT",
-                    "BTC/USDT",
-                    "TRX/USDT",
-                    "UNI/USDT",
-                    "LINK/USDT",
-                    "BCH/USDT",
-                    "ETH/USDT",
-                    "BNB/USDT",
-                    "ADA/USDT",
-                    "AVAX/USDT",
-                ],
-                "TT": ["1h", "2h", "4h"],
-                "MOP": [5, 8, 10],
-            },
-            "AlmaMacdStrategy": {
-                "pairs": [
-                    "DOGE/USDT",
-                ],
-                "TT": ["2h"],
-                "MOP": [1],
-            },
-            "VwapMacdStrategy": {
-                "pairs": [
-                    "BTC/USDT",
-                    "ETH/USDT",
-                    "BNB/USDT",
-                    "XRP/USDT",
-                    "DOGE/USDT",
-                ],
-                "TT": ["15m", "30m", "1h"],
-                "MOP": [3, 4, 5, 6],
-            },
-            "EMA": {
-                "pairs": [
-                    "BTC/USDT",
-                    "ETH/USDT",
-                    "BNB/USDT",
-                    "XRP/USDT",
-                    "DOGE/USDT",
-                ],
-                "TT": ["15m"],
-                "MOP": [5],
-            },
-            "AdxDmiOnlyStrategy": {
-                "pairs": [
-                    "ETH/USDT",
-                    "XRP/USDT",
-                    "BTC/USDT",
-                ],
-                "TT": ["2h"],
-                "MOP": [2, 3, 4],
-            },
-            "AdxDmiLargeCap15m": {
-                "pairs": [
-                    "BTC/USDT",
-                    "ETH/USDT",
-                    "SOL/USDT",
-                ],
-                "TT": ["15m"],
-                "MOP": [2, 3],
-            },
-        }
+    @classmethod
+    def _load_strategy_setups(cls, filepath: str | None = None) -> dict[str, dict]:
+        """
+        Load test setups from a standalone configuration file:
+        1. Custom filepath (if passed)
+        2. test_setups.json in root or user_data/
+        3. test_setups.py module (TEST_SETUPS)
+        """
+        candidate_paths = [
+            filepath,
+            "test_setups.json",
+            "user_data/test_setups.json",
+        ]
+        for p in candidate_paths:
+            if p and os.path.exists(p):
+                try:
+                    with open(p, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        if isinstance(data, dict):
+                            return data
+                except Exception as exc:
+                    print(f"[SETUPS] Warning: error reading {p}: {exc}")
+
+        if load_setups:
+            try:
+                loaded = load_setups()
+                if loaded:
+                    return loaded
+            except Exception:
+                pass
+
+        if TEST_SETUPS:
+            return dict(TEST_SETUPS)
+
+        return {}
 
     def runtest(self, strategy: str, download: bool = False, test: bool = True) -> list[dict]:
         cfg = self._get_strategy_config(strategy)

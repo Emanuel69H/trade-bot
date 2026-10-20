@@ -802,58 +802,225 @@ CMD ["serve", "-s", "dist", "-l", "3000"]
 `,
   },
   {
+    id: 'test_setups_json',
+    name: 'test_setups.json (Strategy Test Configurations)',
+    filename: 'test_setups.json',
+    category: 'config',
+    language: 'json',
+    description:
+      'Standalone multi-combination test configuration file defining pairs, timeframes (TT), and max open trades (MOP) for automated batch testing.',
+    content: `{
+  "AdxDmiRobustV2": {
+    "pairs": [
+      "ETH/USDT",
+      "XRP/USDT",
+      "DOGE/USDT",
+      "BTC/USDT"
+    ],
+    "TT": ["1h", "2h"],
+    "MOP": [2, 3, 4]
+  },
+  "RegimeAdaptiveMaster": {
+    "pairs": [
+      "ETH/USDT",
+      "XRP/USDT",
+      "DOGE/USDT",
+      "BTC/USDT"
+    ],
+    "TT": ["1h"],
+    "MOP": [2, 4]
+  },
+  "DonchianBreakoutADXChop": {
+    "pairs": [
+      "XRP/USDT",
+      "DOGE/USDT",
+      "ETH/USDT"
+    ],
+    "TT": ["1h"],
+    "MOP": [4]
+  },
+  "UniversalMACD": {
+    "pairs": [
+      "ETH/USDT",
+      "BTC/USDT"
+    ],
+    "TT": ["5m"],
+    "MOP": [1]
+  },
+  "SupertrendEmaAdx": {
+    "pairs": [
+      "DOGE/USDT",
+      "XRP/USDT",
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT"
+    ],
+    "TT": ["1h"],
+    "MOP": [1]
+  },
+  "Supertrend": {
+    "pairs": [
+      "DOGE/USDT",
+      "XRP/USDT",
+      "BTC/USDT",
+      "TRX/USDT",
+      "UNI/USDT",
+      "LINK/USDT",
+      "BCH/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "ADA/USDT",
+      "AVAX/USDT"
+    ],
+    "TT": ["1h", "2h", "4h"],
+    "MOP": [5, 8, 10]
+  },
+  "AlmaMacdStrategy": {
+    "pairs": [
+      "DOGE/USDT"
+    ],
+    "TT": ["2h"],
+    "MOP": [1]
+  },
+  "VwapMacdStrategy": {
+    "pairs": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "XRP/USDT",
+      "DOGE/USDT"
+    ],
+    "TT": ["15m", "30m", "1h"],
+    "MOP": [3, 4, 5, 6]
+  },
+  "EMA": {
+    "pairs": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "XRP/USDT",
+      "DOGE/USDT"
+    ],
+    "TT": ["15m"],
+    "MOP": [5]
+  },
+  "AdxDmiOnlyStrategy": {
+    "pairs": [
+      "ETH/USDT",
+      "XRP/USDT",
+      "BTC/USDT"
+    ],
+    "TT": ["2h"],
+    "MOP": [2, 3, 4]
+  },
+  "AdxDmiLargeCap15m": {
+    "pairs": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "SOL/USDT"
+    ],
+    "TT": ["15m"],
+    "MOP": [2, 3]
+  }
+}
+`,
+  },
+  {
+    id: 'test_setups_py',
+    name: 'test_setups.py (Python Test Configurations & Loader)',
+    filename: 'test_setups.py',
+    category: 'script',
+    language: 'python',
+    description:
+      'Python module exporting TEST_SETUPS dictionary with helper functions load_setups() and save_setups() for automated batch testing.',
+    content: `#!/usr/bin/env python3
+"""
+Standalone Strategy Test Configurations for Automated Multi-Combination Testing.
+"""
+from __future__ import annotations
+import json
+from pathlib import Path
+
+TEST_SETUPS: dict[str, dict] = {
+    "AdxDmiRobustV2": {
+        "pairs": ["ETH/USDT", "XRP/USDT", "DOGE/USDT", "BTC/USDT"],
+        "TT": ["1h", "2h"],
+        "MOP": [2, 3, 4],
+    },
+    "AdxDmiOnlyStrategy": {
+        "pairs": ["ETH/USDT", "XRP/USDT", "BTC/USDT"],
+        "TT": ["2h"],
+        "MOP": [2, 3, 4],
+    },
+    "AdxDmiLargeCap15m": {
+        "pairs": ["BTC/USDT", "ETH/USDT", "SOL/USDT"],
+        "TT": ["15m"],
+        "MOP": [2, 3],
+    },
+}
+
+setup = TEST_SETUPS
+
+def load_setups(path=None):
+    target = Path(path) if path else Path(__file__).parent / "test_setups.json"
+    if target.exists():
+        with open(target, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return dict(TEST_SETUPS)
+
+if __name__ == "__main__":
+    for strat, cfg in TEST_SETUPS.items():
+        print(f"{strat}: pairs={len(cfg['pairs'])}, TT={cfg['TT']}")
+`,
+  },
+  {
     id: 'run_test_py',
     name: 'run_test.py (Backtest Automation Script)',
     filename: 'run_test.py',
     category: 'script',
     language: 'python',
     description:
-      'Python backtest execution script supporting multi-timeframe comparison (1h, 2h, 4h), data downloading, and report generation.',
+      'Python backtest execution script supporting multi-timeframe comparison, loading test combinations from test_setups.json, and generating reports.',
     content: `#!/usr/bin/env python3
 import subprocess
 import sys
+import json
+import os
+from test_setups import load_setups, TEST_SETUPS
 
 
 class RunTest:
-    def __init__(self, timerange="20210101-20260830", config="user_data/config_a.json"):
+    def __init__(self, timerange="20210101-20260830", config="user_data/config_a.json", setups_file=None):
         self.timerange = timerange
         self.config = config
+        self.setup = self._load_strategy_setups(setups_file)
 
-    def download_data(self, pairs=None, timeframes=["1h", "2h", "4h"]):
-        print(f"[*] Downloading historical candles for timeframes: {timeframes}")
-        cmd = [
-            "docker", "compose", "run", "--rm", "freqtrade_a",
-            "download-data",
-            "--config", self.config,
-            "--timerange", self.timerange,
-            "-t"
-        ] + timeframes
-        subprocess.run(cmd, check=True)
+    @classmethod
+    def _load_strategy_setups(cls, filepath=None):
+        candidate_paths = [filepath, "test_setups.json", "user_data/test_setups.json"]
+        for p in candidate_paths:
+            if p and os.path.exists(p):
+                with open(p, "r", encoding="utf-8") as f:
+                    return json.load(f)
+        return dict(TEST_SETUPS)
 
     def runtest(self, strategy_name, download=False, test=True):
-        if download:
-            self.download_data()
-
-        if test:
-            print(f"[*] Running Backtest for strategy: {strategy_name} ({self.timerange})...")
-            cmd = [
-                "docker", "compose", "run", "--rm", "freqtrade_a",
-                "backtesting",
-                "--config", self.config,
-                "--strategy", strategy_name,
-                "--timerange", self.timerange,
-                "--export", "trades"
-            ]
-            subprocess.run(cmd, check=True)
+        cfg = self.setup.get(strategy_name, {})
+        print(f"[*] Running Backtest for {strategy_name} with pairs {cfg.get('pairs')}...")
+        cmd = [
+            "docker", "compose", "run", "--rm", "freqtrade_a",
+            "backtesting",
+            "--config", self.config,
+            "--strategy", strategy_name,
+            "--timerange", self.timerange,
+            "--export", "trades"
+        ]
+        subprocess.run(cmd, check=True)
 
 
 if __name__ == "__main__":
-    download = False
-    test = True
-
     tester = RunTest(timerange="20210101-20260830")
-    # Compare original vs robust
-    tester.runtest("AdxDmiRobustV2", download=download, test=test)
+    tester.runtest("AdxDmiLargeCap15m")
 `,
   },
   {

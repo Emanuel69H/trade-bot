@@ -1,0 +1,174 @@
+{
+  "AdxDmiRobustV2": {
+    "pairs": [
+      "ETH/USDT",
+      "XRP/USDT",
+      "DOGE/USDT",
+      "BTC/USDT"
+    ],
+    "TT": [
+      "1h",
+      "2h"
+    ],
+    "MOP": [
+      2,
+      3,
+      4
+    ]
+  },
+  "RegimeAdaptiveMaster": {
+    "pairs": [
+      "ETH/USDT",
+      "XRP/USDT",
+      "DOGE/USDT",
+      "BTC/USDT"
+    ],
+    "TT": [
+      "1h"
+    ],
+    "MOP": [
+      2,
+      4
+    ]
+  },
+  "DonchianBreakoutADXChop": {
+    "pairs": [
+      "XRP/USDT",
+      "DOGE/USDT",
+      "ETH/USDT"
+    ],
+    "TT": [
+      "1h"
+    ],
+    "MOP": [
+      4
+    ]
+  },
+  "UniversalMACD": {
+    "pairs": [
+      "ETH/USDT",
+      "BTC/USDT"
+    ],
+    "TT": [
+      "5m"
+    ],
+    "MOP": [
+      1
+    ]
+  },
+  "SupertrendEmaAdx": {
+    "pairs": [
+      "DOGE/USDT",
+      "XRP/USDT",
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT"
+    ],
+    "TT": [
+      "1h"
+    ],
+    "MOP": [
+      1
+    ]
+  },
+  "Supertrend": {
+    "pairs": [
+      "DOGE/USDT",
+      "XRP/USDT",
+      "BTC/USDT",
+      "TRX/USDT",
+      "UNI/USDT",
+      "LINK/USDT",
+      "BCH/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "ADA/USDT",
+      "AVAX/USDT"
+    ],
+    "TT": [
+      "1h",
+      "2h",
+      "4h"
+    ],
+    "MOP": [
+      5,
+      8,
+      10
+    ]
+  },
+  "AlmaMacdStrategy": {
+    "pairs": [
+      "DOGE/USDT"
+    ],
+    "TT": [
+      "2h"
+    ],
+    "MOP": [
+      1
+    ]
+  },
+  "VwapMacdStrategy": {
+    "pairs": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "XRP/USDT",
+      "DOGE/USDT"
+    ],
+    "TT": [
+      "15m",
+      "30m",
+      "1h"
+    ],
+    "MOP": [
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  "EMA": {
+    "pairs": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "XRP/USDT",
+      "DOGE/USDT"
+    ],
+    "TT": [
+      "15m"
+    ],
+    "MOP": [
+      5
+    ]
+  },
+  "AdxDmiOnlyStrategy": {
+    "pairs": [
+      "ETH/USDT",
+      "XRP/USDT",
+      "BTC/USDT"
+    ],
+    "TT": [
+      "2h"
+    ],
+    "MOP": [
+      2,
+      3,
+      4
+    ]
+  },
+  "AdxDmiLargeCap15m": {
+    "pairs": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "SOL/USDT"
+    ],
+    "TT": [
+      "15m"
+    ],
+    "MOP": [
+      2,
+      3
+    ]
+  }
+}
