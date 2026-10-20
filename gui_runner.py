@@ -90,12 +90,21 @@ class FreqtradeGuiRunner(ctk.CTk):
         )
 
         self.timeranges = [
-            ("5 Years (2021-2026)", self.tester.TR_5Y),
-            ("3 Years (2023-2026)", self.tester.TR_3Y),
-            ("2 Years (2024-2026)", self.tester.TR_2Y),
-            ("1 Year (2025-2026)", self.tester.TR_1Y),
-            ("6 Months (2025-2026)", self.tester.TR_6M),
-            ("Latest (20250325-2026)", self.tester.TR_LY),
+            ("Last 5 Years (until 10.10.2026)", self.tester.TR_LAST_5Y),
+            ("Last 4 Years (until 10.10.2026)", self.tester.TR_LAST_4Y),
+            ("Last 3 Years (until 10.10.2026)", self.tester.TR_LAST_3Y),
+            ("Last 2 Years (until 10.10.2026)", self.tester.TR_LAST_2Y),
+            ("Last 1 Year (until 10.10.2026)", self.tester.TR_LAST_1Y),
+            ("Last 6 Months (until 10.10.2026)", self.tester.TR_LAST_6M),
+            ("Last 3 Months (until 10.10.2026)", self.tester.TR_LAST_3M),
+            ("Last 1 Month (until 10.10.2026)", self.tester.TR_LAST_1M),
+            ("Year 2025 (01.01 - 31.12)", self.tester.TR_2025),
+            ("Year 2024 (01.01 - 31.12)", self.tester.TR_2024),
+            ("Year 2023 (01.01 - 31.12)", self.tester.TR_2023),
+            ("Year 2022 (01.01 - 31.12)", self.tester.TR_2022),
+            ("Year 2021 (01.01 - 31.12)", self.tester.TR_2021),
+            ("Year 2020 (01.01 - 31.12)", self.tester.TR_2020),
+            ("Year 2026 YTD (until 10.10.2026)", self.tester.TR_2026_YTD),
         ]
 
         # Database tab state

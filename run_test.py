@@ -18,33 +18,66 @@ try:
     from test_setups import (
         DEFAULT_TIMERANGE,
         LD,
+        SPECIFIC_YEARS,
         TEST_SETUPS,
         TIMERANGES,
+        TR_1M,
         TR_1Y,
         TR_2Y,
+        TR_3M,
         TR_3Y,
+        TR_4Y,
         TR_5Y,
         TR_6M,
+        TR_2020,
+        TR_2021,
+        TR_2022,
+        TR_2023,
+        TR_2024,
+        TR_2025,
+        TR_2026_YTD,
+        TR_LAST_1M,
+        TR_LAST_1Y,
+        TR_LAST_2Y,
+        TR_LAST_3M,
+        TR_LAST_3Y,
+        TR_LAST_4Y,
+        TR_LAST_5Y,
+        TR_LAST_6M,
         TR_LY,
+        get_year_timerange,
         load_setups,
     )
 except ImportError:
-    LD = 20260830
-    TR_LY = f"20250325-{LD}"
-    TR_1Y = f"20250101-{LD}"
-    TR_2Y = f"20240101-{LD}"
-    TR_3Y = f"20230101-{LD}"
-    TR_5Y = f"20210101-{LD}"
-    TR_6M = f"20250601-{LD}"
-    DEFAULT_TIMERANGE = TR_LY
-    TIMERANGES = {
-        "6M": TR_6M,
-        "1Y": TR_1Y,
-        "2Y": TR_2Y,
-        "3Y": TR_3Y,
-        "5Y": TR_5Y,
-        "LY": TR_LY,
-    }
+    LD = 20261010
+    TR_LAST_5Y = f"20211010-{LD}"
+    TR_LAST_4Y = f"20221010-{LD}"
+    TR_LAST_3Y = f"20231010-{LD}"
+    TR_LAST_2Y = f"20241010-{LD}"
+    TR_LAST_1Y = f"20251010-{LD}"
+    TR_LAST_6M = f"20260410-{LD}"
+    TR_LAST_3M = f"20260710-{LD}"
+    TR_LAST_1M = f"20260910-{LD}"
+    TR_5Y = TR_LAST_5Y
+    TR_4Y = TR_LAST_4Y
+    TR_3Y = TR_LAST_3Y
+    TR_2Y = TR_LAST_2Y
+    TR_1Y = TR_LAST_1Y
+    TR_6M = TR_LAST_6M
+    TR_3M = TR_LAST_3M
+    TR_1M = TR_LAST_1M
+    TR_LY = TR_LAST_1Y
+    TR_2020 = "20200101-20201231"
+    TR_2021 = "20210101-20211231"
+    TR_2022 = "20220101-20221231"
+    TR_2023 = "20230101-20231231"
+    TR_2024 = "20240101-20241231"
+    TR_2025 = "20250101-20251231"
+    TR_2026_YTD = f"20260101-{LD}"
+    DEFAULT_TIMERANGE = TR_LAST_5Y
+    TIMERANGES = {}
+    SPECIFIC_YEARS = {}
+    get_year_timerange = lambda y: f"{y}0101-{y}1231"
     TEST_SETUPS = {}
     load_setups = None
 
@@ -53,14 +86,36 @@ ld = LD
 
 class RunTest:
     ld = LD
-    TR_LY = TR_LY
-    TR_1Y = TR_1Y
-    TR_2Y = TR_2Y
-    TR_3Y = TR_3Y
+    TR_LAST_5Y = TR_LAST_5Y
+    TR_LAST_4Y = TR_LAST_4Y
+    TR_LAST_3Y = TR_LAST_3Y
+    TR_LAST_2Y = TR_LAST_2Y
+    TR_LAST_1Y = TR_LAST_1Y
+    TR_LAST_6M = TR_LAST_6M
+    TR_LAST_3M = TR_LAST_3M
+    TR_LAST_1M = TR_LAST_1M
+
     TR_5Y = TR_5Y
+    TR_4Y = TR_4Y
+    TR_3Y = TR_3Y
+    TR_2Y = TR_2Y
+    TR_1Y = TR_1Y
     TR_6M = TR_6M
+    TR_3M = TR_3M
+    TR_1M = TR_1M
+    TR_LY = TR_LY
+
+    TR_2020 = TR_2020
+    TR_2021 = TR_2021
+    TR_2022 = TR_2022
+    TR_2023 = TR_2023
+    TR_2024 = TR_2024
+    TR_2025 = TR_2025
+    TR_2026_YTD = TR_2026_YTD
+
     DEFAULT_TIMERANGE = DEFAULT_TIMERANGE
     TIMERANGES = TIMERANGES
+    SPECIFIC_YEARS = SPECIFIC_YEARS
 
     def __init__(
         self,

@@ -944,25 +944,47 @@ import json
 from pathlib import Path
 
 # --- 1. TIME RANGE VARIABLES ---
-LD = 20260830
+# Master End Date: 10.10.2026 (20261010)
+LD = 20261010
 
-TR_LY = f"20250325-{LD}"  # Latest / Recent range (~1.5 years)
-TR_1Y = f"20250101-{LD}"  # 1 Year test
-TR_2Y = f"20240101-{LD}"  # 2 Years test
-TR_3Y = f"20230101-{LD}"  # 3 Years test
-TR_5Y = f"20210101-{LD}"  # 5 Years test (Full bull & bear cycle)
-TR_6M = f"20250601-{LD}"  # 6 Months short-term test
+# Rolling Backtest Ranges Until 10.10.2026
+TR_LAST_5Y = f"20211010-{LD}"  # Last 5 Years
+TR_LAST_4Y = f"20221010-{LD}"  # Last 4 Years
+TR_LAST_3Y = f"20231010-{LD}"  # Last 3 Years
+TR_LAST_2Y = f"20241010-{LD}"  # Last 2 Years
+TR_LAST_1Y = f"20251010-{LD}"  # Last 1 Year
+TR_LAST_6M = f"20260410-{LD}"  # Last 6 Months
+TR_LAST_3M = f"20260710-{LD}"  # Last 3 Months
+TR_LAST_1M = f"20260910-{LD}"  # Last 1 Month
+
+# Specific Calendar Years (1.1 to 31.12)
+TR_2020 = "20200101-20201231"
+TR_2021 = "20210101-20211231"
+TR_2022 = "20220101-20221231"
+TR_2023 = "20230101-20231231"
+TR_2024 = "20240101-20241231"
+TR_2025 = "20250101-20251231"
+TR_2026_YTD = f"20260101-{LD}"
 
 TIMERANGES: dict[str, str] = {
-    "6M": TR_6M,
-    "1Y": TR_1Y,
-    "2Y": TR_2Y,
-    "3Y": TR_3Y,
-    "5Y": TR_5Y,
-    "LY": TR_LY,
+    "last_5y": TR_LAST_5Y,
+    "last_4y": TR_LAST_4Y,
+    "last_3y": TR_LAST_3Y,
+    "last_2y": TR_LAST_2Y,
+    "last_1y": TR_LAST_1Y,
+    "last_6m": TR_LAST_6M,
+    "last_3m": TR_LAST_3M,
+    "last_1m": TR_LAST_1M,
+    "year_2025": TR_2025,
+    "year_2024": TR_2024,
+    "year_2023": TR_2023,
+    "year_2022": TR_2022,
+    "year_2021": TR_2021,
+    "year_2020": TR_2020,
+    "year_2026_ytd": TR_2026_YTD,
 }
 
-DEFAULT_TIMERANGE = TR_LY
+DEFAULT_TIMERANGE = TR_LAST_5Y
 
 # --- 2. REUSABLE COIN PAIR VARIABLES ---
 PAIRS_ETH_XRP_DOGE_BTC = ["ETH/USDT", "XRP/USDT", "DOGE/USDT", "BTC/USDT"]
@@ -976,8 +998,8 @@ TEST_SETUPS: dict[str, dict] = {
         "pairs": PAIRS_ETH_XRP_DOGE_BTC,
         "TT": ["1h", "2h"],
         "MOP": [2, 3, 4],
-        "timerange": TR_5Y,
-        "timeranges": [TR_1Y, TR_2Y, TR_5Y],
+        "timerange": TR_LAST_5Y,
+        "timeranges": [TR_LAST_1Y, TR_LAST_2Y, TR_LAST_5Y, TR_2024, TR_2025],
     },
     "AdxDmiOnlyStrategy": {
         "pairs": PAIRS_ETH_XRP_BTC,

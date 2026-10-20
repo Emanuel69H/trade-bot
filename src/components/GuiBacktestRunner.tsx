@@ -84,12 +84,21 @@ const STRATEGY_PRESETS: Record<string, StrategySetup> = {
 };
 
 const TIMERANGES = [
-  { label: 'TR_5Y (5 Years): 20210101-20260830', value: '20210101-20260830' },
-  { label: 'TR_3Y (3 Years): 20230101-20260830', value: '20230101-20260830' },
-  { label: 'TR_2Y (2 Years): 20240101-20260830', value: '20240101-20260830' },
-  { label: 'TR_1Y (1 Year): 20250101-20260830', value: '20250101-20260830' },
-  { label: 'TR_6M (6 Months): 20250601-20260830', value: '20250601-20260830' },
-  { label: 'TR_LY (Latest): 20250325-20260830', value: '20250325-20260830' },
+  { label: 'Last 5 Years (until 10.10.2026): 20211010-20261010', value: '20211010-20261010' },
+  { label: 'Last 4 Years (until 10.10.2026): 20221010-20261010', value: '20221010-20261010' },
+  { label: 'Last 3 Years (until 10.10.2026): 20231010-20261010', value: '20231010-20261010' },
+  { label: 'Last 2 Years (until 10.10.2026): 20241010-20261010', value: '20241010-20261010' },
+  { label: 'Last 1 Year (until 10.10.2026): 20251010-20261010', value: '20251010-20261010' },
+  { label: 'Last 6 Months (until 10.10.2026): 20260410-20261010', value: '20260410-20261010' },
+  { label: 'Last 3 Months (until 10.10.2026): 20260710-20261010', value: '20260710-20261010' },
+  { label: 'Last 1 Month (until 10.10.2026): 20260910-20261010', value: '20260910-20261010' },
+  { label: 'Year 2025 (01.01 - 31.12): 20250101-20251231', value: '20250101-20251231' },
+  { label: 'Year 2024 (01.01 - 31.12): 20240101-20241231', value: '20240101-20241231' },
+  { label: 'Year 2023 (01.01 - 31.12): 20230101-20231231', value: '20230101-20231231' },
+  { label: 'Year 2022 (01.01 - 31.12): 20220101-20221231', value: '20220101-20221231' },
+  { label: 'Year 2021 (01.01 - 31.12): 20210101-20211231', value: '20210101-20211231' },
+  { label: 'Year 2020 (01.01 - 31.12): 20200101-20201231', value: '20200101-20201231' },
+  { label: 'Year 2026 YTD (until 10.10.2026): 20260101-20261010', value: '20260101-20261010' },
 ];
 
 export interface ParsedResultRow {
@@ -114,7 +123,7 @@ interface GuiBacktestRunnerProps {
 
 export const GuiBacktestRunner: React.FC<GuiBacktestRunnerProps> = ({ onGoToDatabase }) => {
   const [strategy, setStrategy] = useState<string>('AdxDmiRobustV2');
-  const [timerange, setTimerange] = useState<string>('20210101-20260830');
+  const [timerange, setTimerange] = useState<string>('20211010-20261010');
   const [downloadData, setDownloadData] = useState<boolean>(false);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [copiedCmd, setCopiedCmd] = useState<boolean>(false);
