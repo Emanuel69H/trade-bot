@@ -1,6 +1,9 @@
 node_modules/
 build/
 dist/
+plot/
+data/
+backtest_results/
 coverage/
 .DS_Store
 *.log
@@ -8,4 +11,6 @@ __pycache__/
 *.pyc
 *.db
 .env*
+*.sqlite
 !.env.example
+
