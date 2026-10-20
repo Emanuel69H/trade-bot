@@ -40,22 +40,10 @@ const STRATEGY_PRESETS: Record<string, StrategySetup> = {
     description: 'Supertrend trend direction confirmed with EMA and ADX.',
   },
   Supertrend: {
-    pairs: [
-      'DOGE/USDT',
-      'XRP/USDT',
-      'BTC/USDT',
-      'TRX/USDT',
-      'UNI/USDT',
-      'LINK/USDT',
-      'BCH/USDT',
-      'ETH/USDT',
-      'BNB/USDT',
-      'ADA/USDT',
-      'AVAX/USDT',
-    ],
-    timeframes: ['1h', '2h', '4h'],
-    maxOpenTrades: [5, 8, 10],
-    description: 'Multi-pair broad crypto basket trend follower.',
+    pairs: ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT', 'DOGE/USDT'],
+    timeframes: ['4h', '2h', '1h'],
+    maxOpenTrades: [3, 5, 8],
+    description: '4-hour Multi-Supertrend trend follower. Lets winning runners run without premature cutoffs, uses agile Fast Supertrend profit-taking, and dynamic trailing protection.',
   },
   AlmaMacdStrategy: {
     pairs: ['DOGE/USDT'],
@@ -122,7 +110,7 @@ interface GuiBacktestRunnerProps {
 }
 
 export const GuiBacktestRunner: React.FC<GuiBacktestRunnerProps> = ({ onGoToDatabase }) => {
-  const [strategy, setStrategy] = useState<string>('AdxDmiRobustV2');
+  const [strategy, setStrategy] = useState<string>('Supertrend');
   const [timerange, setTimerange] = useState<string>('20211010-20261010');
   const [downloadData, setDownloadData] = useState<boolean>(false);
   const [isRunning, setIsRunning] = useState<boolean>(false);

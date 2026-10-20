@@ -707,6 +707,6 @@ if __name__ == "__main__":
     download = False
     test = True
 
-    tester = RunTest(timerange="20210101-20260830")
-    tester.runtest("AdxDmiRobustV2", download=download, test=test)
-    Tonification("Freqtrade test", "Test was completed", 3000)
+    tester = RunTest()
+    tester.runtest("Supertrend", download=download, test=test)
+    Tonification("Freqtrade test", "Test for Supertrend was completed", 3000)

@@ -5,7 +5,7 @@
   "stake_amount": 100,
   "tradable_balance_ratio": 0.99,
   "fiat_display_currency": "USD",
-  "timeframe": "1h",
+  "timeframe": "4h",
   "dry_run": true,
   "dry_run_wallet": 1000,
   "cancel_open_orders_on_exit": false,
@@ -36,9 +36,15 @@
     "enable_ws": false,
     "name": "binance",
     "pair_whitelist": [
+      "BTC/USDT",
       "ETH/USDT",
+      "SOL/USDT",
       "XRP/USDT",
-      "BTC/USDT"
+      "DOGE/USDT",
+      "BNB/USDT",
+      "ADA/USDT",
+      "AVAX/USDT",
+      "LINK/USDT"
     ],
     "pair_blacklist": []
   },

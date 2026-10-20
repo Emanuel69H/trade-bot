@@ -110,29 +110,23 @@
   },
   "Supertrend": {
     "pairs": [
-      "DOGE/USDT",
-      "XRP/USDT",
       "BTC/USDT",
-      "TRX/USDT",
-      "UNI/USDT",
-      "LINK/USDT",
-      "BCH/USDT",
       "ETH/USDT",
       "BNB/USDT",
-      "ADA/USDT",
-      "AVAX/USDT"
+      "XRP/USDT",
+      "DOGE/USDT"
     ],
     "TT": [
-      "1h",
+      "4h",
       "2h",
-      "4h"
+      "1h"
     ],
     "MOP": [
+      3,
       5,
-      8,
-      10
+      8
     ],
-    "timerange": "20251010-20261010",
+    "timerange": "20211010-20261010",
     "timeranges": [
       "20251010-20261010",
       "20241010-20261010",

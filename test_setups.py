@@ -200,10 +200,10 @@ TEST_SETUPS: dict[str, dict] = {
         "timeranges": [TR_LAST_1Y, TR_LAST_2Y, TR_2024, TR_2025],
     },
     "Supertrend": {
-        "pairs": PAIRS_ALL_11,
-        "TT": TF_MULTI,
-        "MOP": MOP_HIGH,
-        "timerange": TR_LAST_1Y,
+        "pairs": PAIRS_TOP_5,
+        "TT": ["4h", "2h", "1h"],
+        "MOP": [3, 5, 8],
+        "timerange": TR_LAST_5Y,
         "timeranges": [TR_LAST_1Y, TR_LAST_2Y, TR_LAST_5Y, TR_2024, TR_2025],
     },
     "AlmaMacdStrategy": {

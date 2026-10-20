@@ -2,7 +2,9 @@ node_modules/
 build/
 dist/
 plot/
-data/
+/data/
+user_data/data/
+!src/data/
 backtest_results/
 coverage/
 .DS_Store
